@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -53,21 +53,21 @@ textarea{width:100%;padding:10px;border:1px solid var(--ln);border-radius:10px;b
 <body>
 <div id="app">
 <h1>📚 Reading Lapse</h1>
-<nav><button data-t="rec" class="on">บันทึก</button><button data-t="stat">สถิติ</button><button data-t="cal">ปฏิทิน</button><button data-t="wall">ผนังไทม์แลปส์</button></nav>
+<nav><button data-t="rec" class="on">Record</button><button data-t="stat">Stats</button><button data-t="cal">Calendar</button><button data-t="wall">Wall</button></nav>
 
 <section id="rec">
 <div class="card">
-<input type="text" id="book" placeholder="กำลังอ่านเล่มไหน? (ไม่ใส่ก็ได้)">
+<input type="text" id="book" placeholder="What are you reading? (optional)">
 <video id="v" autoplay muted playsinline></video>
-<div class="mu" id="msg" style="margin-top:6px">กดเริ่ม แล้ววางมือถือให้เห็นหนังสือ แอพจะจับภาพทุก 5 วินาที</div>
+<div class="mu" id="msg" style="margin-top:6px">Press start and point your phone at your book. A frame is captured every 5 seconds.</div>
 <div id="tm">00:00:00</div>
-<div class="row" style="margin-bottom:8px"><label class="btn g lb">📷 ถ่ายรูป<input type="file" id="pf2" accept="image/*" capture="environment"></label><label class="btn g lb">🎬 อัดคลิป<input type="file" id="vf" accept="video/*" capture="environment"></label></div><div class="row" style="margin-bottom:8px"><label class="btn g lb" style="font-size:14px">🖼 เลือกรูป/คลิปจากเครื่อง<input type="file" id="gf" accept="image/*,video/*" multiple></label></div><div class="mu" id="pn"></div><div id="th" class="ths"></div><button class="btn hide" id="sv" style="margin-bottom:10px">💾 บันทึกรูปเลย</button>
-<div style="margin:6px 0 10px"><b>📝 โน้ตวันนี้</b><textarea id="tn" rows="3" placeholder="วันนี้อ่านอะไร รู้สึกยังไง..."></textarea></div>
-<div class="row hide" style="margin-bottom:10px"><button class="btn g" id="ph">📷 ถ่ายรูป</button><span class="mu" id="pc" style="align-self:center"></span></div><input type="file" id="pf" accept="image/*" capture="environment" class="hide">
+<div class="row" style="margin-bottom:8px"><label class="btn g lb">📷 Photo<input type="file" id="pf2" accept="image/*" capture="environment"></label><label class="btn g lb">🎬 Casual clip<input type="file" id="vf" accept="video/*" capture="environment"></label></div><div class="row" style="margin-bottom:8px"><label class="btn g lb" style="font-size:14px">🖼 Pick photos / clips<input type="file" id="gf" accept="image/*,video/*" multiple></label></div><div class="mu" style="margin-bottom:6px">📷 🎬 🖼 = casual, not counted as reading • ▶ Start reading = timer + camera, counts as reading</div><div class="mu" id="pn"></div><div id="th" class="ths"></div><button class="btn hide" id="sv" style="margin-bottom:10px">💾 Save photos now</button>
+<div style="margin:6px 0 10px"><b>📝 Today’s note</b><textarea id="tn" rows="3" placeholder="What did you read today? How did it feel..."></textarea></div>
+<div class="row hide" style="margin-bottom:10px"><button class="btn g" id="ph">📷 Photo</button><span class="mu" id="pc" style="align-self:center"></span></div><input type="file" id="pf" accept="image/*" capture="environment" class="hide">
 <div class="row">
-<button class="btn" id="go">▶ เริ่มอ่าน</button>
-<button class="btn g hide" id="pz">⏸ พัก</button>
-<button class="btn g hide" id="st">⏹ จบ</button>
+<button class="btn g" id="cam" style="flex:0 0 auto">🔄 Front/Back</button><button class="btn" id="go">▶ Start reading</button>
+<button class="btn g hide" id="pz">⏸ Pause</button>
+<button class="btn g hide" id="st">⏹ Finish</button>
 </div>
 </div>
 </section>
@@ -77,23 +77,23 @@ textarea{width:100%;padding:10px;border:1px solid var(--ln);border-radius:10px;b
 <section id="wall" class="hide"></section>
 </div>
 
-<dialog id="cf"><b id="cft" style="font-size:18px"></b><div class="row" style="margin-top:14px"><button class="btn g" id="cfn">ยกเลิก</button><button class="btn" id="cfy" style="background:#d33">🗑 ลบ</button></div></dialog>
-<dialog id="cf"><p id="cft" style="margin:4px 0 14px;font-size:17px"></p><div class="row"><button class="btn g" id="cfn">ยกเลิก</button><button class="btn" id="cfy" style="background:#d33">🗑 ลบ</button></div></dialog>
-<dialog id="vw"><img id="vi" alt=""><input type="range" id="vs" min="0" value="0" style="width:100%;margin-top:8px"><div class="mu" id="vt" style="text-align:center"></div><div class="row" style="margin-top:8px"><button class="btn g" id="vp">⏸</button><button class="btn" id="vsv">💾 บันทึก</button></div><div class="row" style="margin-top:8px"><button class="btn g" id="vd">🗑 ลบทั้งหมด</button><button class="btn g" id="vdf">ลบเฉพาะภาพนี้</button></div><div class="row" style="margin-top:8px"><button class="btn g" id="vc">ปิด</button></div></dialog>
-<dialog id="nd"><b id="ndt"></b><textarea id="ndx" rows="6" placeholder="เขียนโน้ตของวันนี้..."></textarea><div class="row" style="margin-top:8px"><button class="btn" id="ndok">บันทึก</button><button class="btn g" id="ndc">ปิด</button></div></dialog>
-<dialog id="dlg"><img id="pimg" alt=""><input type="range" id="sl" min="0" value="0" style="width:100%;margin-top:8px"><div class="row" style="margin-top:8px"><button class="btn g" id="rp">▶ เล่นใหม่</button><button class="btn g" id="dp">🗑 ลบภาพนี้</button><button class="btn g" id="cl">ปิด</button></div></dialog>
+<dialog id="cf"><b id="cft" style="font-size:18px"></b><div class="row" style="margin-top:14px"><button class="btn g" id="cfn">Cancel</button><button class="btn" id="cfy" style="background:#d33">🗑 Delete</button></div></dialog>
+<dialog id="cf"><p id="cft" style="margin:4px 0 14px;font-size:17px"></p><div class="row"><button class="btn g" id="cfn">Cancel</button><button class="btn" id="cfy" style="background:#d33">🗑 Delete</button></div></dialog>
+<dialog id="vw"><img id="vi" alt=""><input type="range" id="vs" min="0" value="0" style="width:100%;margin-top:8px"><div class="mu" id="vt" style="text-align:center"></div><div class="row" style="margin-top:8px"><button class="btn g" id="vp">⏸</button><button class="btn" id="vsv">💾 Save</button></div><div class="row" style="margin-top:8px"><button class="btn g" id="vd">🗑 Delete all</button><button class="btn g" id="vdf">Delete this frame only</button></div><div class="row" style="margin-top:8px"><button class="btn g" id="vc">Close</button></div></dialog>
+<dialog id="nd"><b id="ndt"></b><textarea id="ndx" rows="6" placeholder="Write a note for this day..."></textarea><div class="row" style="margin-top:8px"><button class="btn" id="ndok">Save</button><button class="btn g" id="ndc">Close</button></div></dialog>
+<dialog id="dlg"><img id="pimg" alt=""><input type="range" id="sl" min="0" value="0" style="width:100%;margin-top:8px"><div class="row" style="margin-top:8px"><button class="btn g" id="rp">▶ Replay</button><button class="btn g" id="dp">🗑 Delete frame</button><button class="btn g" id="cl">Close</button></div></dialog>
 
 <script>
 const $=s=>document.querySelector(s);
 let db,mem=[];
-function openDB(){return new Promise(r=>{try{const q=indexedDB.open('rl',1);q.onupgradeneeded=()=>q.result.createObjectStore('s',{keyPath:'id'});q.onsuccess=()=>{db=q.result;r()};q.onerror=()=>r()}catch(e){r()}})}
+function openDB(){return new Promise(r=>{try{const q=indexedDB.open('rl',2);q.onupgradeneeded=()=>{const d=q.result;if(!d.objectStoreNames.contains('s'))d.createObjectStore('s',{keyPath:'id'});if(!d.objectStoreNames.contains('b'))d.createObjectStore('b',{keyPath:'id'})};q.onsuccess=()=>{db=q.result;r()};q.onerror=()=>r()}catch(e){r()}})}
 function all(){return new Promise(r=>{if(!db)return r(mem);try{const q=db.transaction('s').objectStore('s').getAll();q.onsuccess=()=>r(q.result);q.onerror=()=>r(mem)}catch(e){r(mem)}})}
 function put(o){mem=mem.filter(x=>x.id!==o.id);mem.push(o);if(db)try{db.transaction('s','readwrite').objectStore('s').put(o)}catch(e){}}
 function del(id){mem=mem.filter(x=>x.id!==id);if(db)try{db.transaction('s','readwrite').objectStore('s').delete(id)}catch(e){}}
 
 const pad=n=>String(n).padStart(2,'0');
 const fmt=s=>pad(Math.floor(s/3600))+':'+pad(Math.floor(s%3600/60))+':'+pad(Math.floor(s%60));
-const mins=s=>s>=3600?(s/3600).toFixed(1)+' ชม.':Math.round(s/60)+' นาที';
+const mins=s=>s>=3600?(s/3600).toFixed(1)+' h':s<60?Math.round(s)+' sec':Math.round(s/60)+' min';
 const key=d=>new Date(d).toLocaleDateString('sv');
 
 let stream,tick,frames=[],acc=0,t0=0,running=false,active=false,lastCap=0;
@@ -112,52 +112,52 @@ function loop(){
 }
 $('#go').onclick=async()=>{
   try{
-    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:640}}});
-    v.srcObject=stream;v.classList.remove('hide');$('#msg').textContent='กำลังบันทึกไทม์แลปส์…';
-  }catch(e){stream=null;v.classList.add('hide');$('#msg').textContent='กล้องสดใช้ไม่ได้ในหน้านี้ — กด 📷 ถ่ายรูปเก็บเองได้เลย และจับเวลาต่อไปปกติ'}
+    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:facing},width:{ideal:640}}});
+    v.srcObject=stream;v.classList.remove('hide');$('#msg').textContent='Recording timelapse…';
+  }catch(e){stream=null;v.classList.add('hide');$('#msg').textContent='Live camera isn’t available here — use 📷 Photo to capture frames manually; the timer still works.'}
   acc=0;t0=Date.now();running=true;active=true;lastCap=0;$('#sv').classList.add('hide');
   setTimeout(cap,800);
   tick=setInterval(loop,500);
   $('#go').classList.add('hide');$('#pz').classList.remove('hide');$('#st').classList.remove('hide');
 };
 $('#pz').onclick=()=>{
-  if(running){acc=el();running=false;$('#pz').textContent='▶ อ่านต่อ'}
-  else{t0=Date.now();running=true;$('#pz').textContent='⏸ พัก'}
+  if(running){acc=el();running=false;$('#pz').textContent='▶ Resume'}
+  else{t0=Date.now();running=true;$('#pz').textContent='⏸ Pause'}
 };
 $('#st').onclick=()=>{
   const d=Math.round(el());clearInterval(tick);
   if(stream){stream.getTracks().forEach(t=>t.stop());v.srcObject=null}
   const ok=d>=5||frames.length;if(ok)put({id:Date.now(),book:$('#book').value.trim(),dur:d,frames});
   running=false;active=false;acc=0;frames=[];pc();$('#tm').textContent='00:00:00';
-  $('#go').classList.remove('hide');$('#pz').classList.add('hide');$('#st').classList.add('hide');$('#pz').textContent='⏸ พัก';
-  $('#msg').textContent=ok?'บันทึกแล้ว! ดูที่แท็บสถิติ 🎉':'สั้นเกินไป ไม่บันทึก';
+  $('#go').classList.remove('hide');$('#pz').classList.add('hide');$('#st').classList.add('hide');$('#pz').textContent='⏸ Pause';
+  $('#msg').textContent=ok?'Saved! Check the Stats tab 🎉':'Too short — not saved';
 };
 
-function pc(){$('#pc').textContent=frames.length?'📷 '+frames.length+' ภาพ':''}
+function pc(){$('#pc').textContent=frames.length?'📷 '+frames.length+' frames':''}
 $('#ph').onclick=()=>$('#pf').click();
 $('#pf').onchange=e=>{const f=e.target.files[0];if(!f)return;const im=new Image();im.onload=()=>{const c=document.createElement('canvas');c.width=480;c.height=Math.round(480*im.height/im.width);c.getContext('2d').drawImage(im,0,0,c.width,c.height);frames.push(c.toDataURL('image/jpeg',.7));URL.revokeObjectURL(im.src);pc()};im.src=URL.createObjectURL(f);e.target.value=''};
 let notes={};try{notes=JSON.parse(localStorage.getItem('rl_n')||'{}')}catch(e){}
 function setNote(k,t){if(t.trim())notes[k]=t;else delete notes[k];try{localStorage.setItem('rl_n',JSON.stringify(notes))}catch(e){}}
 $('#tn').value=notes[key(Date.now())]||'';$('#tn').oninput=e=>setNote(key(Date.now()),e.target.value);
-let nk;function openNote(k){nk=k;$('#ndt').textContent=new Date(k+'T12:00').toLocaleDateString('th-TH',{weekday:'long',day:'numeric',month:'long',year:'numeric'});$('#ndx').value=notes[k]||'';$('#nd').showModal()}
-$('#ndok').onclick=()=>{setNote(nk,$('#ndx').value);$('#nd').close();if(!$('#cal').classList.contains('hide'))renderCal();$('#tn').value=notes[key(Date.now())]||''};
+let nk;function openNote(k){nk=k;$('#ndt').textContent=new Date(k+'T12:00').toLocaleDateString('en-US',{weekday:'long',day:'numeric',month:'long',year:'numeric'});$('#ndx').value=notes[k]||'';$('#nd').showModal()}
+$('#ndok').onclick=()=>{setNote(nk,$('#ndx').value);$('#nd').close();if(!$('#cal').classList.contains('hide'))renderCal();if(!$('#wall').classList.contains('hide'))renderWall();$('#tn').value=notes[key(Date.now())]||''};
 $('#ndc').onclick=()=>$('#nd').close();
 let cfa;function confirmDel(msg,fn){cfa=fn;$('#cft').textContent=msg;$('#cf').showModal()}
 $('#cfy').onclick=()=>{$('#cf').close();const f=cfa;cfa=null;if(f)f()};
 $('#cfn').onclick=()=>{cfa=null;$('#cf').close()};
 document.addEventListener('click',e=>{
   const t=e.target.closest&&e.target.closest('[data-d],#da,#dp');if(!t)return;
-  if(t.dataset.d){const id=+t.dataset.d;confirmDel('ลบคลิปนี้ใช่ไหม?',()=>{del(id);renderWall()})}
-  else if(t.id==='da')confirmDel('ลบประวัติทั้งหมดใช่ไหม? กู้คืนไม่ได้',async()=>{const ss=await all();ss.forEach(s=>del(s.id));renderWall()});
-  else if(t.id==='dp')confirmDel('ลบภาพนี้ใช่ไหม?',()=>{clearInterval(pt);const i=+$('#sl').value;cur.frames.splice(i,1);if(!cur.frames.length){del(cur.id);$('#dlg').close();renderWall();return}put(cur);const j=Math.min(i,cur.frames.length-1);$('#sl').max=cur.frames.length-1;$('#sl').value=j;$('#pimg').src=cur.frames[j]});
+  if(t.dataset.d){const id=+t.dataset.d;confirmDel('Delete this clip?',()=>{del(id);renderWall()})}
+  else if(t.id==='da')confirmDel('Clear all history? This can’t be undone.',async()=>{const ss=await all();ss.forEach(s=>del(s.id));renderWall()});
+  else if(t.id==='dp')confirmDel('Delete this frame?',()=>{clearInterval(pt);const i=+$('#sl').value;cur.frames.splice(i,1);if(!cur.frames.length){del(cur.id);$('#dlg').close();renderWall();return}put(cur);const j=Math.min(i,cur.frames.length-1);$('#sl').max=cur.frames.length-1;$('#sl').value=j;$('#pimg').src=cur.frames[j]});
 });
-function ask(b){return false;if(!b)return true;if(b.dataset.ok)return true;const t=b.textContent;b.dataset.ok=1;b.textContent='แน่ใจ? กดอีกครั้ง';setTimeout(()=>{delete b.dataset.ok;b.textContent=t},3000);return false}
-function pc(){const n=frames.length;if(pc.n===n)return;pc.n=n;$('#pn').textContent=n?'📷 '+n+' ภาพ (กด ✕ เพื่อลบ)':'';const s=Math.max(0,n-15);$('#th').innerHTML=frames.slice(s).map((x,i)=>`<div><img src="${x}" alt=""><b data-r="${s+i}">✕</b></div>`).join('');document.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{frames.splice(+b.dataset.r,1);pc()});$('#sv').classList.toggle('hide',active||!n)}
+function ask(b){return false;if(!b)return true;if(b.dataset.ok)return true;const t=b.textContent;b.dataset.ok=1;b.textContent='Sure? Tap again';setTimeout(()=>{delete b.dataset.ok;b.textContent=t},3000);return false}
+function pc(){const n=frames.length;if(pc.n===n)return;pc.n=n;$('#pn').textContent=n?'📷 '+n+' frames (tap ✕ to remove)':'';const s=Math.max(0,n-15);$('#th').innerHTML=frames.slice(s).map((x,i)=>`<div><img src="${x}" alt=""><b data-r="${s+i}">✕</b></div>`).join('');document.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{frames.splice(+b.dataset.r,1);pc()});$('#sv').classList.toggle('hide',active||!n)}
 function toF(im,w){const c=document.createElement('canvas');c.width=w;c.height=Math.round(w*(im.videoHeight||im.height)/(im.videoWidth||im.width));c.getContext('2d').drawImage(im,0,0,c.width,c.height);return c.toDataURL('image/jpeg',.65)}
 function fromVideo(f){return new Promise(r=>{const u=URL.createObjectURL(f),vd=document.createElement('video');vd.muted=true;vd.playsInline=true;vd.preload='auto';vd.src=u;vd.onerror=()=>r();vd.onloadedmetadata=async()=>{const d=isFinite(vd.duration)?vd.duration:10,n=Math.min(60,Math.max(2,Math.round(d/2)));for(let i=0;i<n;i++){await new Promise(ok=>{vd.onseeked=ok;setTimeout(ok,1500);vd.currentTime=Math.min(d-.05,d*i/n)});if(vd.videoWidth)frames.push(toF(vd,320));pc()}URL.revokeObjectURL(u);r()}})}
 function fromImg(f){return new Promise(r=>{const im=new Image();im.onload=()=>{frames.push(toF(im,480));URL.revokeObjectURL(im.src);pc();r()};im.onerror=()=>r();im.src=URL.createObjectURL(f)})}
 ['pf2','vf','gf'].forEach(id=>$('#'+id).onchange=async e=>{const fl=[...e.target.files];e.target.value='';for(const f of fl){if(f.type.startsWith('video'))await fromVideo(f);else await fromImg(f)}});
-$('#sv').onclick=()=>{put({id:Date.now(),book:$('#book').value.trim(),dur:0,frames});frames=[];pc();$('#msg').textContent='บันทึกแล้ว ดูที่แท็บผนังไทม์แลปส์'};
+$('#sv').onclick=()=>{put({id:Date.now(),book:$('#book').value.trim(),dur:0,frames});frames=[];pc();$('#msg').textContent='Saved — see the Wall tab'};
 async function renderStats(){
   const ss=await all();const by={};
   ss.forEach(s=>{const k=key(s.id);by[k]=(by[k]||0)+s.dur});
@@ -167,20 +167,20 @@ async function renderStats(){
   let st=0,i=27;if(!by[days[27]])i=26;
   while(i>=0&&by[days[i]]){st++;i--}
   const w7=days.slice(21),mx=Math.max(1,...w7.map(k=>by[k]||0));
-  const nm=['อา','จ','อ','พ','พฤ','ศ','ส'];
+  const nm=['Su','Mo','Tu','We','Th','Fr','Sa'];
   $('#stat').innerHTML=`
-  <div class="card kpi"><div><b>${mins(by[today]||0)}</b><span class="mu">วันนี้</span></div><div><b>${mins(wk)}</b><span class="mu">7 วันล่าสุด</span></div><div><b>${st} 🔥</b><span class="mu">วันติดต่อกัน</span></div></div>
-  <div class="card"><b>7 วันล่าสุด</b><div class="bars">${w7.map(k=>`<div><span>${by[k]?Math.round(by[k]/60):''}</span><i style="height:${(by[k]||0)/mx*80}px"></i>${nm[new Date(k+'T12:00').getDay()]}</div>`).join('')}</div></div>
-  <div class="card"><b>28 วันล่าสุด</b><div class="heat">${days.map(k=>{const m=(by[k]||0)/60;const o=m?Math.min(1,.25+m/90):0;return `<span title="${k}: ${Math.round(m)} นาที" style="${o?`background:var(--ac);opacity:${o}`:''}"></span>`}).join('')}</div><div class="mu" style="margin-top:6px">ยิ่งเข้ม ยิ่งอ่านนาน</div></div>
-  <div class="card mu">รวมทั้งหมด ${ss.length} ครั้ง • ${mins(ss.reduce((a,s)=>a+s.dur,0))}</div>`;
+  <div class="card kpi"><div><b>${mins(by[today]||0)}</b><span class="mu">Today</span></div><div><b>${mins(wk)}</b><span class="mu">Last 7 days</span></div><div><b>${st} 🔥</b><span class="mu">day streak</span></div></div>
+  <div class="card"><b>Last 7 days</b><div class="bars">${w7.map(k=>`<div><span>${by[k]?Math.max(1,Math.round(by[k]/60)):''}</span><i style="height:${(by[k]||0)/mx*80}px"></i>${nm[new Date(k+'T12:00').getDay()]}</div>`).join('')}</div></div>
+  <div class="card"><b>Last 28 days</b><div class="heat">${days.map(k=>{const m=(by[k]||0)/60;const o=m?Math.min(1,.25+m/90):0;return `<span title="${k}: ${Math.round(m)} min" style="${o?`background:var(--ac);opacity:${o}`:''}"></span>`}).join('')}</div><div class="mu" style="margin-top:6px">Darker = longer reading</div></div>
+  <div class="card mu">Total ${ss.length} sessions • ${mins(ss.reduce((a,s)=>a+s.dur,0))}</div>`;
 }
 async function renderWall(){
   const ss=(await all()).sort((a,b)=>b.id-a.id);
-  if(!ss.length){$('#wall').innerHTML='<div class="card mu">ยังไม่มีคลิป ไปอัดครั้งแรกกันเลย</div>';return}
+  if(!ss.length){$('#wall').innerHTML='<div class="card mu">No clips yet — record your first one!</div>';return}
   const g={};ss.forEach(s=>(g[key(s.id)]=g[key(s.id)]||[]).push(s));
-  $('#wall').innerHTML=Object.keys(g).map(k=>`<div class="day">${new Date(k+'T12:00').toLocaleDateString('th-TH',{weekday:'short',day:'numeric',month:'short'})} • ${mins(g[k].reduce((a,s)=>a+s.dur,0))}</div><div class="pics">${g[k].map(s=>`<div class="pol">${s.frames.length?`<img src="${s.frames[Math.floor(s.frames.length/2)]}" alt="">`:'<div class="ph">📖</div>'}<p>${(s.book||'ไม่ระบุเล่ม').replace(/</g,'&lt;')} • ${mins(s.dur)}</p><button data-p="${s.id}">▶</button><button data-d="${s.id}">🗑</button></div>`).join('')}</div>`).join('');
-  Object.keys(g).forEach((k,i)=>{const d=document.querySelectorAll('#wall .day')[i];const t=document.createElement('textarea');t.rows=2;t.placeholder='โน้ตของวันนี้...';t.value=notes[k]||'';t.oninput=()=>setNote(k,t.value);d.after(t)});
-  $('#wall').insertAdjacentHTML('beforeend','<button class="btn g" id="da" style="width:100%;margin-top:16px">🗑 ลบประวัติทั้งหมด</button>');$('#da').onclick=e=>{if(!ask(e.currentTarget))return;ss.forEach(s=>del(s.id));renderWall()};
+  $('#wall').innerHTML=Object.keys(g).map(k=>`<div class="day">${new Date(k+'T12:00').toLocaleDateString('en-US',{weekday:'short',day:'numeric',month:'short'})} • ${mins(g[k].reduce((a,s)=>a+s.dur,0))}</div><div class="pics">${g[k].map(s=>`<div class="pol">${s.frames.length?`<img src="${s.frames[Math.floor(s.frames.length/2)]}" alt="">`:'<div class="ph">📖</div>'}<p>${(s.book||'Unnamed book').replace(/</g,'&lt;')} • ${mins(s.dur)}</p><button data-p="${s.id}">▶</button><button data-d="${s.id}">🗑</button></div>`).join('')}</div>`).join('');
+  Object.keys(g).forEach((k,i)=>{const d=document.querySelectorAll('#wall .day')[i];const t=document.createElement('textarea');t.rows=2;t.placeholder='Note for this day...';t.value=notes[k]||'';t.oninput=()=>setNote(k,t.value);d.after(t)});
+  $('#wall').insertAdjacentHTML('beforeend','<button class="btn g" id="da" style="width:100%;margin-top:16px">🗑 Clear all history</button>');$('#da').onclick=e=>{if(!ask(e.currentTarget))return;ss.forEach(s=>del(s.id));renderWall()};
   document.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>play(ss.find(s=>s.id==b.dataset.p)));
   document.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{if(ask(b,'ลบคลิปนี้?')){del(+b.dataset.d);renderWall()}});
 }
@@ -188,11 +188,11 @@ let calY=new Date().getFullYear(),calM=new Date().getMonth();
 async function renderCal(){
   const ss=await all(),by={};
   ss.forEach(s=>{const k=key(s.id);by[k]=(by[k]||0)+s.dur});
-  const th=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+  const th=['January','February','March','April','May','June','July','August','September','October','November','December'];
   const yt=Object.keys(by).filter(k=>k.startsWith(calY+'-')).reduce((a,k)=>a+by[k],0);
-  const hd=['อา','จ','อ','พ','พฤ','ศ','ส'].map(x=>`<span class="h">${x}</span>`).join('');
+  const hd=['Su','Mo','Tu','We','Th','Fr','Sa'].map(x=>`<span class="h">${x}</span>`).join('');
   const today=key(Date.now());
-  let h=`<div class="card row" style="align-items:center"><button class="btn g" id="py" style="flex:0 0 48px">◀</button><div style="flex:1;text-align:center"><b>${th[calM]} ${calY+543}</b><div class="mu">ยอดรวมปี ${calY+543}: ${mins(yt)}</div></div><button class="btn g" id="ny" style="flex:0 0 48px">▶</button></div>`;
+  let h=`<div class="card row" style="align-items:center"><button class="btn g" id="py" style="flex:0 0 48px">◀</button><div style="flex:1;text-align:center"><b>${th[calM]} ${calY}</b><div class="mu">${calY} total: ${mins(yt)}</div></div><button class="btn g" id="ny" style="flex:0 0 48px">▶</button></div>`;
   for(let m=calM;m<=calM;m++){
     const f=new Date(calY,m,1).getDay(),n=new Date(calY,m+1,0).getDate();
     let c='',mt=0;
@@ -200,9 +200,9 @@ async function renderCal(){
     for(let d=1;d<=n;d++){
       const k=calY+'-'+pad(m+1)+'-'+pad(d),sec=by[k]||0;mt+=sec;
       const a=sec?Math.min(1,.25+sec/60/90):0;
-      c+=`<span data-k="${k}" class="${k===today?'t':''}" style="${a?`background:rgba(224,101,58,${a});color:${a>.55?'#fff':'inherit'}`:''}">${d}${notes[k]?'<small>✎</small>':''}${sec?`<small>${Math.round(sec/60)}น.</small>`:''}</span>`;
+      c+=`<span data-k="${k}" class="${k===today?'t':''}" style="${a?`background:rgba(224,101,58,${a});color:${a>.55?'#fff':'inherit'}`:''}">${d}${notes[k]?'<small>✎</small>':''}${sec?`<small>${Math.max(1,Math.round(sec/60))}m</small>`:''}</span>`;
     }
-    h+=`<div class="card"><div class="row" style="justify-content:space-between"><b>ยอดรวมเดือน${th[m]}</b><span class="mu">${mt?mins(mt):'-'}</span></div><div class="cg">${hd}${c}</div></div>`;
+    h+=`<div class="card"><div class="row" style="justify-content:space-between"><b>${th[m]} total</b><span class="mu">${mt?mins(mt):'-'}</span></div><div class="cg">${hd}${c}</div></div>`;
   }
   $('#cal').innerHTML=h;document.querySelectorAll('#cal [data-k]').forEach(s=>s.onclick=()=>openNote(s.dataset.k));
   $('#py').onclick=()=>{if(--calM<0){calM=11;calY--}renderCal()};
@@ -211,7 +211,7 @@ async function renderCal(){
 let pt,cur;
 $('#dp').onclick=e=>{if(!ask(e.currentTarget))return;clearInterval(pt);const i=+$('#sl').value;cur.frames.splice(i,1);if(!cur.frames.length){del(cur.id);$('#dlg').close();renderWall();return}put(cur);const j=Math.min(i,cur.frames.length-1);$('#sl').max=cur.frames.length-1;$('#sl').value=j;$('#pimg').src=cur.frames[j]};
 function play(s){
-  if(!s.frames.length)return alert('คลิปนี้ไม่มีภาพ (จับเวลาอย่างเดียว)');
+  if(!s.frames.length)return alert('This clip has no frames (timer only)');
   cur=s;$('#sl').max=s.frames.length-1;$('#dlg').showModal();run();
 }
 function run(){
@@ -236,12 +236,12 @@ function toF(im,w,q){const c=document.createElement('canvas');c.width=w;c.height
 function fromImg(f){return new Promise(r=>{const im=new Image();im.onload=()=>{frames.push(toF(im,Math.min(1280,im.width),.82));URL.revokeObjectURL(im.src);pc();r()};im.onerror=()=>r();im.src=URL.createObjectURL(f)})}
 async function renderWall(){
   const ss=(await all()).sort((a,b)=>b.id-a.id),w=$('#wall');
-  if(!ss.length){w.innerHTML='<div class="card mu">ยังไม่มีรูปหรือคลิป</div>';return}
+  if(!ss.length){w.innerHTML='<div class="card mu">No photos or clips yet</div>';return}
   const g={};ss.forEach(s=>(g[key(s.id)]=g[key(s.id)]||[]).push(s));
-  w.innerHTML='<div class="mu">แตะที่รูปเพื่อดู เล่นไทม์แลปส์ และบันทึก</div>';
+  w.innerHTML='<div class="mu">Tap a photo to view, play the timelapse, or save it</div>';
   Object.keys(g).forEach(k=>{
-    const h=document.createElement('div');h.className='day';h.textContent=new Date(k+'T12:00').toLocaleDateString('th-TH',{weekday:'short',day:'numeric',month:'short'})+' • '+mins(g[k].reduce((a,s)=>a+s.dur,0));
-    const t=document.createElement('textarea');t.rows=2;t.placeholder='โน้ตของวันนี้...';t.value=notes[k]||'';t.oninput=()=>setNote(k,t.value);
+    const h=document.createElement('div');h.className='day';h.textContent=new Date(k+'T12:00').toLocaleDateString('en-US',{weekday:'short',day:'numeric',month:'short'})+(g[k].some(s=>s.dur)?' • 📖 Total read '+mins(g[k].reduce((a,s)=>a+s.dur,0)):'');
+    const t=document.createElement('textarea');t.rows=2;t.placeholder='Note for this day...';t.value=notes[k]||'';t.oninput=()=>setNote(k,t.value);
     const p=document.createElement('div');p.className='pics';
     g[k].forEach(s=>{
       const n=s.frames.length,c=document.createElement('div');c.className='pol';
@@ -249,27 +249,27 @@ async function renderWall(){
       if(n)th.src=s.frames[Math.floor(n/2)];else{th.className='ph';th.textContent='📖'}
       th.style.cursor='pointer';th.onclick=()=>openView(s);
       const pp=document.createElement('p');
-      pp.textContent=[s.book||'ไม่ระบุเล่ม',s.dur?mins(s.dur):'',n>1?'🎞 '+n+' ภาพ':(n?'📷 1 ภาพ':'')].filter(Boolean).join(' • ');
+      pp.textContent=[s.book||'Unnamed book',s.dur?'📖 Read '+mins(s.dur):'🎬 Casual clip',n>1?'🎞 '+n+' frames':(n?'📷 1 frame':'')].filter(Boolean).join(' • ');
       const b=document.createElement('button');b.textContent='🗑';
-      b.onclick=ev=>{ev.stopPropagation();confirmDel('ลบรายการนี้ใช่ไหม?',()=>{del(s.id);renderWall()})};
+      b.onclick=ev=>{ev.stopPropagation();confirmDel('Delete this entry?',()=>{del(s.id);renderWall()})};
       c.append(th,pp,b);p.append(c)});
-    w.append(h,t,p)});
-  const da=document.createElement('button');da.className='btn g';da.style.cssText='width:100%;margin-top:16px';da.textContent='🗑 ลบประวัติทั้งหมด';
-  da.onclick=()=>confirmDel('ลบรายการทั้งหมดใช่ไหม? กู้คืนไม่ได้',()=>{ss.forEach(s=>del(s.id));renderWall()});
+    const nt=document.createElement('div');nt.className='nt'+(notes[k]?'':' empty');nt.onclick=()=>openNote(k);nt.textContent=notes[k]?'📝 '+notes[k]:'＋ Add a note for this day';w.append(h,nt,p)});
+  const da=document.createElement('button');da.className='btn g';da.style.cssText='width:100%;margin-top:16px';da.textContent='🗑 Clear all history';
+  da.onclick=()=>confirmDel('Delete everything? This can’t be undone.',()=>{ss.forEach(s=>del(s.id));renderWall()});
   w.append(da);
 }
 let vs,vt,vpl=false,vi=0;
 function vshow(){$('#vi').src=vs.frames[vi];$('#vs').value=vi;$('#vt').textContent=(vi+1)+' / '+vs.frames.length}
 function vpause(){clearInterval(vt);vpl=false;$('#vp').textContent='▶'}
 function vplay(){clearInterval(vt);vpl=true;$('#vp').textContent='⏸';vt=setInterval(()=>{if(vi>=vs.frames.length-1){vpause();return}vi++;vshow()},vs.frames.length<30?500:90)}
-function vmode(){const m=vs.frames.length>1;$('#vs').style.display=m?'':'none';$('#vp').style.display=m?'':'none';$('#vdf').style.display=m?'':'none';$('#vsv').textContent=m?'💾 บันทึกคลิป':'💾 บันทึกรูป';$('#vs').max=vs.frames.length-1}
+function vmode(){const m=vs.frames.length>1;$('#vs').style.display=m?'':'none';$('#vp').style.display=m?'':'none';$('#vdf').style.display=m?'':'none';$('#vsv').textContent=m?'💾 Save clip':'💾 Save photo';$('#vs').max=vs.frames.length-1}
 function openView(s){if(!s.frames.length)return;vs=s;vi=0;vmode();$('#vw').showModal();vshow();if(s.frames.length>1)vplay()}
 $('#vp').onclick=()=>{if(vpl)vpause();else{if(vi>=vs.frames.length-1)vi=0;vplay()}};
 $('#vs').oninput=e=>{vpause();vi=+e.target.value;vshow()};
 $('#vc').onclick=()=>$('#vw').close();
 $('#vw').onclose=()=>{clearInterval(vt);renderWall()};
-$('#vd').onclick=()=>{vpause();confirmDel(vs.frames.length>1?'ลบทั้งคลิปนี้ใช่ไหม?':'ลบรูปนี้ใช่ไหม?',()=>{del(vs.id);$('#vw').close()})};
-$('#vdf').onclick=()=>{vpause();confirmDel('ลบภาพที่ '+(vi+1)+' ออกจากคลิปนี้?',()=>{vs.frames.splice(vi,1);if(!vs.frames.length){del(vs.id);$('#vw').close();return}put(vs);vi=Math.min(vi,vs.frames.length-1);vmode();vshow()})};
+$('#vd').onclick=()=>{vpause();confirmDel(vs.frames.length>1?'Delete this whole clip?':'Delete this photo?',()=>{del(vs.id);$('#vw').close()})};
+$('#vdf').onclick=()=>{vpause();confirmDel('Delete frame '+(vi+1)+' from this clip?',()=>{vs.frames.splice(vi,1);if(!vs.frames.length){del(vs.id);$('#vw').close();return}put(vs);vi=Math.min(vi,vs.frames.length-1);vmode();vshow()})};
 function d2b(u){const a=atob(u.split(',')[1]),n=new Uint8Array(a.length);for(let i=0;i<a.length;i++)n[i]=a.charCodeAt(i);return new Blob([n],{type:'image/jpeg'})}
 async function makeVideo(fr){
   const imgs=(await Promise.all(fr.map(u=>new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src=u})))).filter(Boolean);
@@ -287,16 +287,113 @@ async function makeVideo(fr){
 }
 $('#vsv').onclick=async()=>{
   const D=window.claude&&await window.claude.use('downloads');
-  if(!D){$('#vt').textContent='บันทึกจากหน้านี้ไม่ได้ — ลองกดค้างที่รูปแล้วเลือกบันทึก';return}
+  if(!D){$('#vt').textContent='Can’t save from this page — try long-pressing the image and choosing Save';return}
   const btn=$('#vsv'),base='reading-'+key(vs.id);btn.disabled=true;
   try{
     if(vs.frames.length===1)await D.save({filename:base+'.jpg',data:d2b(vs.frames[0])});
-    else{vpause();$('#vt').textContent='กำลังสร้างคลิป รอสักครู่...';const v=await makeVideo(vs.frames);await D.save({filename:base+'.'+v.ext,data:v.blob})}
-    $('#vt').textContent='ส่งไปบันทึกแล้ว ✓';
-  }catch(e){$('#vt').textContent=(e&&e.code==='declined')?'ยกเลิกการบันทึก':'บันทึกไม่สำเร็จ'}
+    else{vpause();$('#vt').textContent='Building clip, please wait...';const v=await makeVideo(vs.frames);await D.save({filename:base+'.'+v.ext,data:v.blob})}
+    $('#vt').textContent='Sent to save ✓';
+  }catch(e){$('#vt').textContent=(e&&e.code==='declined')?'Save cancelled':'Save failed'}
   btn.disabled=false;
 };
-openDB();
+/* ===== v3: clip duration counts as reading time ===== */
+let pendDur=0;
+const pcBase=pc;
+pc=function(){pcBase();const e=$('#pn');e.textContent=e.textContent.split(' • ⏱')[0];if(pendDur&&frames.length)e.textContent+=' • ⏱ '+mins(Math.round(pendDur))};
+function fromVideo(f){return new Promise(r=>{const u=URL.createObjectURL(f),vd=document.createElement('video');vd.muted=true;vd.playsInline=true;vd.preload='auto';vd.src=u;vd.onerror=()=>r();vd.onloadedmetadata=async()=>{const d=isFinite(vd.duration)?vd.duration:10,n=Math.min(60,Math.max(2,Math.round(d/2)));for(let i=0;i<n;i++){await new Promise(ok=>{vd.onseeked=ok;setTimeout(ok,1500);vd.currentTime=Math.min(d-.05,d*i/n)});if(vd.videoWidth)frames.push(toF(vd,320));pc()}URL.revokeObjectURL(u);r()}})}
+$('#sv').onclick=()=>{const d=Math.round(pendDur);put({id:Date.now(),book:$('#book').value.trim(),dur:d,frames});frames=[];pendDur=0;pc.n=-1;pc();$('#msg').textContent='บันทึกแล้ว'+(d?' • counted as reading: '+mins(d):'')+' — see Stats or Wall'};
+const stOld=$('#st').onclick;
+$('#st').onclick=()=>{stOld();pendDur=0;pc.n=-1;pc()};
+/* ===== v4: real time in viewer ===== */
+$('#vt').style.whiteSpace='pre-line';
+function vshow(){
+  const n=vs.frames.length,hm=t=>new Date(t).toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+  $('#vi').src=vs.frames[vi];$('#vs').value=vi;
+  let t=(vi+1)+' / '+n;
+  if(vs.dur&&n>1)t+=' • elapsed ≈ '+fmt(Math.round(vs.dur*vi/(n-1)))+' of '+fmt(vs.dur);
+  t+='\n'+(vs.dur?'Reading time '+mins(vs.dur)+' • '+hm(vs.id-vs.dur*1000)+'–'+hm(vs.id):'🎬 Casual clip — not counted as reading • '+hm(vs.id));
+  $('#vt').textContent=t;
+}
+/* ===== v5: front/back camera ===== */
+let facing='environment';
+$('#cam').onclick=async()=>{
+  facing=facing==='environment'?'user':'environment';
+  v.style.transform=facing==='user'?'scaleX(-1)':'';
+  $('#msg').textContent='Camera: '+(facing==='user'?'front':'back');
+  if(active&&stream){
+    try{stream.getTracks().forEach(t=>t.stop());const ns=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:facing},width:{ideal:640}}});stream=ns;v.srcObject=ns;v.classList.remove('hide')}
+    catch(e){$('#msg').textContent='Couldn’t switch camera'}
+  }
+};
+/* ===== v6: motivation board ===== */
+const BH=560,COLORS=['#ffe27a','#ffb5a7','#b8e0d2','#cdb4f6','#a8d8ff','#ffffff'];
+const QUOTES=['Read a little more — future you will say thanks 📚','Slow is better than stopping','One page a day is still a step forward','You are one chapter away from a better you','A little better every day ✨','Focus now, chill later 🔥','No need to be perfect — just start','Small steps every day.','You have got this!','Discipline > Motivation','Rest if you must, but never quit','Read today to become who you want to be','Progress, not perfection.','Every minute you read is an investment in your future'];
+(()=>{
+const css=document.createElement('style');css.textContent='#bd{position:relative;height:'+BH+'px;border-radius:12px;overflow:hidden;background:repeating-linear-gradient(45deg,var(--bg),var(--bg) 14px,var(--card) 14px,var(--card) 28px);border:1px dashed var(--ln);touch-action:pan-y;margin-top:8px}.bi{position:absolute;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}.bi.sel{outline:2px dashed var(--ac);outline-offset:3px}.bi img{width:100%;display:block;border:6px solid #fff;border-radius:3px;box-shadow:0 3px 10px #0004;pointer-events:none;-webkit-user-drag:none}.bi .tx{padding:10px;border-radius:4px;box-shadow:0 3px 10px #0004;color:#2b2620;font-weight:700;text-align:center;line-height:1.3;word-break:break-word;pointer-events:none}.bt{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.bt .btn{flex:1 1 auto;padding:10px 8px;font-size:14px}.sw{display:flex;gap:8px;margin:10px 0}.sw i{width:34px;height:34px;border-radius:50%;border:3px solid transparent;display:block}.sw i.on{border-color:var(--tx)}';
+document.head.append(css);
+let bmem=[],items=[],selId=null;
+const hasB=()=>db&&db.objectStoreNames.contains('b');
+const bAll=()=>new Promise(r=>{if(!hasB())return r(bmem);try{const q=db.transaction('b').objectStore('b').getAll();q.onsuccess=()=>r(q.result);q.onerror=()=>r(bmem)}catch(e){r(bmem)}});
+const bPut=o=>{bmem=bmem.filter(x=>x.id!==o.id);bmem.push(o);if(hasB())try{db.transaction('b','readwrite').objectStore('b').put(o)}catch(e){}};
+const bDel=id=>{bmem=bmem.filter(x=>x.id!==id);if(hasB())try{db.transaction('b','readwrite').objectStore('b').delete(id)}catch(e){}};
+const bd=document.createElement('div');bd.id='bd';
+const bw=()=>bd.clientWidth||320;
+const topZ=()=>Math.max(0,...items.map(x=>x.z||0))+1;
+function place(o){o.x=Math.random()*(100-o.w);o.y=Math.random()*(BH-130);o.r=Math.round(Math.random()*16-8)}
+function add(o){o.id=Date.now()*1000+Math.floor(Math.random()*1000);o.z=topZ();place(o);items.push(o);bPut(o)}
+function draw(){
+  bd.innerHTML='';
+  if(!items.length)bd.innerHTML='<div class="mu" style="padding:40px 20px;text-align:center">Empty for now — tap ✨ Auto-stick or add your own photos / text</div>';
+  [...items].sort((a,b)=>a.z-b.z).forEach(it=>{
+    const e=document.createElement('div');e.className='bi'+(it.id===selId?' sel':'');
+    e.style.cssText='left:'+it.x+'%;top:'+it.y+'px;width:'+it.w+'%;transform:rotate('+it.r+'deg);z-index:'+it.z;
+    if(it.t==='img'){const im=new Image();im.src=it.src;im.draggable=false;e.append(im)}
+    else{const d=document.createElement('div');d.className='tx';d.style.background=it.c;d.style.fontSize=Math.max(12,bw()*it.w/100*.12)+'px';d.textContent=it.text;e.append(d)}
+    e.onpointerdown=ev=>drag(ev,it,e);
+    bd.append(e)});
+  tb.style.display=selId?'flex':'none';
+}
+function drag(ev,it,e){
+  ev.preventDefault();
+  if(selId!==it.id){selId=it.id;it.z=topZ();bPut(it);bd.querySelectorAll('.bi').forEach(x=>x.classList.remove('sel'));e.classList.add('sel');e.style.zIndex=it.z;tb.style.display='flex'}
+  const sx=ev.clientX,sy=ev.clientY,ox=it.x,oy=it.y;
+  try{e.setPointerCapture(ev.pointerId)}catch(_){}
+  e.onpointermove=m=>{it.x=Math.min(100-it.w*.35,Math.max(-it.w*.65,ox+(m.clientX-sx)/bw()*100));it.y=Math.min(BH-30,Math.max(-20,oy+(m.clientY-sy)));e.style.left=it.x+'%';e.style.top=it.y+'px'};
+  e.onpointerup=e.onpointercancel=()=>{e.onpointermove=null;bPut(it)};
+}
+bd.onpointerdown=ev=>{if(ev.target===bd||ev.target.parentNode===bd&&!ev.target.classList.contains('bi')){selId=null;draw()}};
+function chg(f){const it=items.find(x=>x.id===selId);if(!it)return;f(it);bPut(it);draw()}
+const tb=document.createElement('div');tb.className='bt';tb.style.display='none';
+[['➖ Smaller',()=>chg(i=>{i.w=Math.max(12,i.w-6)})],['➕ Bigger',()=>chg(i=>{i.w=Math.min(90,i.w+6)})],['↻ Rotate',()=>chg(i=>{i.r=(i.r+10)%360})],['🗑 Delete',()=>{if(selId)confirmDel('Remove this from the board?',()=>{bDel(selId);items=items.filter(x=>x.id!==selId);selId=null;draw()})}]].forEach(([l,f])=>{const b=document.createElement('button');b.className='btn g';b.textContent=l;b.onclick=f;tb.append(b)});
+const ctl=document.createElement('div');ctl.className='bt';
+const lb=document.createElement('label');lb.className='btn g lb';lb.textContent='🖼 Add photo';
+const inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.multiple=true;lb.append(inp);
+inp.onchange=async e=>{const fl=[...e.target.files];e.target.value='';for(const f of fl){await new Promise(r=>{const im=new Image();im.onload=()=>{add({t:'img',src:toF(im,Math.min(700,im.width),.8),w:34});URL.revokeObjectURL(im.src);r()};im.onerror=r;im.src=URL.createObjectURL(f)})}draw()};
+const mk=(l,f)=>{const b=document.createElement('button');b.className='btn g';b.textContent=l;b.onclick=f;return b};
+const dg=document.createElement('dialog');
+dg.innerHTML='<b>Motivation text</b><textarea id="btx" rows="3" placeholder="e.g. You can do it — read a bit more today..."></textarea><div class="sw" id="bsw"></div><div class="row"><button class="btn g" id="bno">Cancel</button><button class="btn" id="bok">Stick it</button></div>';
+document.body.append(dg);
+let bc=COLORS[0];
+COLORS.forEach((c,i)=>{const s=document.createElement('i');s.style.background=c;if(!i)s.className='on';s.onclick=()=>{bc=c;[...$('#bsw').children].forEach(x=>x.classList.remove('on'));s.classList.add('on')};$('#bsw').append(s)});
+$('#bno').onclick=()=>dg.close();
+$('#bok').onclick=()=>{const t=$('#btx').value.trim();if(t){add({t:'txt',text:t,c:bc,w:38});draw()}$('#btx').value='';dg.close()};
+const auto=()=>{const used=new Set(items.filter(x=>x.t==='txt').map(x=>x.text)),pool=QUOTES.filter(q=>!used.has(q));(pool.length?pool:QUOTES).slice().sort(()=>Math.random()-.5).slice(0,3).forEach(q=>add({t:'txt',text:q,c:COLORS[Math.floor(Math.random()*COLORS.length)],w:36+Math.floor(Math.random()*10)}));draw()};
+ctl.append(lb,mk('✍ Write text',()=>dg.showModal()),mk('✨ Auto-stick',auto),mk('🎲 Shuffle',()=>{items.forEach(i=>{place(i);bPut(i)});draw()}));
+const card=document.createElement('div');card.className='card';
+card.innerHTML='<b>🎨 Motivation board</b><div class="mu" style="margin:4px 0 8px">Drag to move, tap to select, then resize / rotate / delete</div>';
+card.append(ctl,tb,bd);$('#rec').append(card);
+window.renderBoard=async()=>{items=await bAll();draw()};
+draw();
+})();
+/* ===== v7: notes preview in wall + viewer ===== */
+const sty=document.createElement('style');sty.textContent='.nt{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-line;background:var(--card);border:1px solid var(--ln);border-left:4px solid var(--ac);border-radius:8px;padding:8px 10px;font-size:14px;margin-bottom:10px;cursor:pointer}.nt.empty{color:var(--mu);background:none;border-style:dashed}';document.head.append(sty);
+const vn=document.createElement('div');vn.id='vn';vn.className='nt';vn.style.display='block';vn.style.maxHeight='120px';vn.style.overflow='auto';vn.style.marginTop='8px';
+$('#vt').after(vn);
+function updVN(){const k=key(vs.id);vn.textContent=notes[k]?'📝 '+notes[k]:'＋ Add a note for this day';vn.classList.toggle('empty',!notes[k])}
+vn.onclick=()=>openNote(key(vs.id));
+const vshowB=vshow;vshow=function(){vshowB();updVN()};
+$('#nd').addEventListener('close',()=>{if($('#vw').open)updVN()});
+openDB().then(()=>renderBoard());
 </script>
 </body>
 </html>
