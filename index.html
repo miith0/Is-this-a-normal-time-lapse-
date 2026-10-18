@@ -80,7 +80,7 @@ textarea{width:100%;padding:10px;border:1px solid var(--ln);border-radius:10px;b
 <dialog id="cf"><b id="cft" style="font-size:18px"></b><div class="row" style="margin-top:14px"><button class="btn g" id="cfn">Cancel</button><button class="btn" id="cfy" style="background:#d33">🗑 Delete</button></div></dialog>
 <dialog id="cf"><p id="cft" style="margin:4px 0 14px;font-size:17px"></p><div class="row"><button class="btn g" id="cfn">Cancel</button><button class="btn" id="cfy" style="background:#d33">🗑 Delete</button></div></dialog>
 <dialog id="vw"><img id="vi" alt=""><input type="range" id="vs" min="0" value="0" style="width:100%;margin-top:8px"><div class="mu" id="vt" style="text-align:center"></div><div class="row" style="margin-top:8px"><button class="btn g" id="vp">⏸</button><button class="btn" id="vsv">💾 Save</button></div><div class="row" style="margin-top:8px"><button class="btn g" id="vd">🗑 Delete all</button><button class="btn g" id="vdf">Delete this frame only</button></div><div class="row" style="margin-top:8px"><button class="btn g" id="vc">Close</button></div></dialog>
-<dialog id="nd"><b id="ndt"></b><textarea id="ndx" rows="6" placeholder="Write a note for this day..."></textarea><div class="row" style="margin-top:8px"><button class="btn" id="ndok">Save</button><button class="btn g" id="ndc">Close</button></div></dialog>
+<dialog id="nd"><b id="ndt"></b><div id="ndl"></div><button class="btn g" id="ndd" style="width:100%;margin:8px 0">🎯 Add deadline on this day</button><textarea id="ndx" rows="6" placeholder="Write a note for this day..."></textarea><div class="row" style="margin-top:8px"><button class="btn" id="ndok">Save</button><button class="btn g" id="ndc">Close</button></div></dialog>
 <dialog id="dlg"><img id="pimg" alt=""><input type="range" id="sl" min="0" value="0" style="width:100%;margin-top:8px"><div class="row" style="margin-top:8px"><button class="btn g" id="rp">▶ Replay</button><button class="btn g" id="dp">🗑 Delete frame</button><button class="btn g" id="cl">Close</button></div></dialog>
 
 <script>
@@ -139,7 +139,7 @@ $('#pf').onchange=e=>{const f=e.target.files[0];if(!f)return;const im=new Image(
 let notes={};try{notes=JSON.parse(localStorage.getItem('rl_n')||'{}')}catch(e){}
 function setNote(k,t){if(t.trim())notes[k]=t;else delete notes[k];try{localStorage.setItem('rl_n',JSON.stringify(notes))}catch(e){}}
 $('#tn').value=notes[key(Date.now())]||'';$('#tn').oninput=e=>setNote(key(Date.now()),e.target.value);
-let nk;function openNote(k){nk=k;$('#ndt').textContent=new Date(k+'T12:00').toLocaleDateString('en-US',{weekday:'long',day:'numeric',month:'long',year:'numeric'});$('#ndx').value=notes[k]||'';$('#nd').showModal()}
+let nk;function openNote(k){nk=k;$('#ndt').textContent=new Date(k+'T12:00').toLocaleDateString('en-US',{weekday:'long',day:'numeric',month:'long',year:'numeric'});$('#ndx').value=notes[k]||'';$('#ndl').innerHTML=dlHtml(k);$('#nd').showModal()}
 $('#ndok').onclick=()=>{setNote(nk,$('#ndx').value);$('#nd').close();if(!$('#cal').classList.contains('hide'))renderCal();if(!$('#wall').classList.contains('hide'))renderWall();$('#tn').value=notes[key(Date.now())]||''};
 $('#ndc').onclick=()=>$('#nd').close();
 let cfa;function confirmDel(msg,fn){cfa=fn;$('#cft').textContent=msg;$('#cf').showModal()}
@@ -200,9 +200,9 @@ async function renderCal(){
     for(let d=1;d<=n;d++){
       const k=calY+'-'+pad(m+1)+'-'+pad(d),sec=by[k]||0;mt+=sec;
       const a=sec?Math.min(1,.25+sec/60/90):0;
-      c+=`<span data-k="${k}" class="${k===today?'t':''}" style="${a?`background:rgba(224,101,58,${a});color:${a>.55?'#fff':'inherit'}`:''}">${d}${notes[k]?'<small>✎</small>':''}${sec?`<small>${Math.max(1,Math.round(sec/60))}m</small>`:''}</span>`;
+      c+=`<span data-k="${k}" class="${k===today?'t':''}" style="${a?`background:rgba(224,101,58,${a});color:${a>.55?'#fff':'inherit'}`:''}">${d}${dlMark(k)}${notes[k]?'<small>✎</small>':''}${sec?`<small>${Math.max(1,Math.round(sec/60))}m</small>`:''}</span>`;
     }
-    h+=`<div class="card"><div class="row" style="justify-content:space-between"><b>${th[m]} total</b><span class="mu">${mt?mins(mt):'-'}</span></div><div class="cg">${hd}${c}</div></div>`;
+    h+=`<div class="card"><div class="row" style="justify-content:space-between"><b>${th[m]} total</b><span class="mu">${mt?mins(mt):'-'}</span></div><div class="cg">${hd}${c}</div>${dlList(calY,m)}</div>`;
   }
   $('#cal').innerHTML=h;document.querySelectorAll('#cal [data-k]').forEach(s=>s.onclick=()=>openNote(s.dataset.k));
   $('#py').onclick=()=>{if(--calM<0){calM=11;calY--}renderCal()};
@@ -286,7 +286,7 @@ async function makeVideo(fr){
   return{blob:new Blob(ch,{type:mt.split(';')[0]}),ext:mt.indexOf('mp4')>0?'mp4':'webm'};
 }
 $('#vsv').onclick=async()=>{
-  const D=window.claude&&await window.claude.use('downloads');
+  let D=null;try{D=window.claude&&await window.claude.use('downloads')}catch(_){}if(!D)D={save:async({filename,data})=>{const a=document.createElement('a');a.href=URL.createObjectURL(data);a.download=filename;document.body.append(a);a.click();a.remove()}};
   if(!D){$('#vt').textContent='Can’t save from this page — try long-pressing the image and choosing Save';return}
   const btn=$('#vsv'),base='reading-'+key(vs.id);btn.disabled=true;
   try{
@@ -393,6 +393,70 @@ function updVN(){const k=key(vs.id);vn.textContent=notes[k]?'📝 '+notes[k]:'�
 vn.onclick=()=>openNote(key(vs.id));
 const vshowB=vshow;vshow=function(){vshowB();updVN()};
 $('#nd').addEventListener('close',()=>{if($('#vw').open)updVN()});
+/* ===== v8: manual time entry ===== */
+(()=>{
+const IS='width:100%;padding:11px;border:1px solid var(--ln);border-radius:10px;background:var(--bg);color:var(--tx);font-size:16px;';
+const dg=document.createElement('dialog');
+dg.innerHTML='<b>Add reading time manually</b><div class="mu" style="margin:6px 0 10px">For sessions you forgot to record</div><input type="date" id="mdt" style="'+IS+'margin-bottom:8px"><div class="row"><input type="number" id="mh" min="0" max="23" inputmode="numeric" placeholder="Hours" style="'+IS+'"><input type="number" id="mm" min="0" max="59" inputmode="numeric" placeholder="Minutes" style="'+IS+'"></div><input type="text" id="mbk" placeholder="Book (optional)" style="margin-top:8px"><div id="mer" style="margin-top:6px;color:#d33;font-size:13px"></div><div class="row" style="margin-top:10px"><button class="btn g" id="mno">Cancel</button><button class="btn" id="mok">Add</button></div>';
+document.body.append(dg);
+const open=document.createElement('button');open.className='btn g';open.style.cssText='width:100%;margin-bottom:12px';open.textContent='➕ Add reading time manually';
+open.onclick=()=>{$('#mdt').value=key(Date.now());$('#mdt').max=key(Date.now());$('#mh').value='';$('#mm').value='';$('#mbk').value='';$('#mer').textContent='';dg.showModal()};
+$('#rec').firstElementChild.after(open);
+$('#mno').onclick=()=>dg.close();
+$('#mok').onclick=()=>{
+  const d=$('#mdt').value,sec=((+$('#mh').value||0)*60+(+$('#mm').value||0))*60;
+  if(!d||sec<=0){$('#mer').textContent='Pick a date and enter a time greater than 0.';return}
+  const t=new Date(d+'T12:00').getTime();
+  if(t>Date.now()+864e5){$('#mer').textContent='That date is in the future.';return}
+  put({id:t+Math.floor(Math.random()*1000),book:$('#mbk').value.trim(),dur:sec,frames:[],manual:1});
+  dg.close();$('#msg').textContent='Added '+mins(sec)+' to '+d+' ✓ — see Stats / Calendar';
+};
+})();
+/* ===== v9: deadlines / goals ===== */
+let dls=[];try{dls=JSON.parse(localStorage.getItem('rl_dl')||'[]')}catch(e){}
+function saveDl(){try{localStorage.setItem('rl_dl',JSON.stringify(dls))}catch(e){}}
+const esc=t=>String(t).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+function ddays(x){return Math.round((new Date(x.d+'T00:00')-new Date(key(Date.now())+'T00:00'))/864e5)}
+function dd(x){if(x.done)return '✓ done';const n=ddays(x);return n===0?'D-DAY':n>0?'D-'+n:'D+'+(-n)+' overdue'}
+function dlMark(k){return dls.some(x=>x.d===k)?'<small>🎯</small>':''}
+function dlList(y,m){const p=y+'-'+pad(m+1)+'-',a=dls.filter(x=>x.d.startsWith(p)).sort((a,b)=>a.d<b.d?-1:1);return a.length?'<div style="margin-top:10px;font-size:13px">'+a.map(x=>'<div style="margin-top:3px">'+x.k+' '+x.d.slice(8)+' · '+esc(x.t)+' <b>'+dd(x)+'</b></div>').join('')+'</div>':''}
+function dlHtml(k){const a=dls.filter(x=>x.d===k);return a.length?'<div style="font-size:14px;margin:6px 0 4px">'+a.map(x=>'<div style="margin-top:3px">'+x.k+' '+esc(x.t)+' <b>'+dd(x)+'</b></div>').join('')+'</div>':''}
+const dlg=document.createElement('dialog');
+dlg.innerHTML='<b id="dlh">New deadline</b><input type="text" id="dlt" placeholder="e.g. Finish this book / Report due" style="margin-top:8px"><input type="date" id="dld" style="width:100%;padding:11px;border:1px solid var(--ln);border-radius:10px;background:var(--bg);color:var(--tx);font-size:16px;margin-top:8px"><div class="sw" id="dlk"></div><div id="dle" style="color:#d33;font-size:13px"></div><div class="row" style="margin-top:8px"><button class="btn g" id="dlc">Cancel</button><button class="btn" id="dls">Save</button></div>';
+document.body.append(dlg);
+let dk='📚',dEdit=null;
+const kb=[];
+['📚','📝','⭐'].forEach(e=>{const b=document.createElement('button');b.className='btn g';b.textContent=e;b.style.cssText='font-size:20px;padding:8px';b.onclick=()=>{dk=e;markK()};kb.push([e,b]);$('#dlk').append(b)});
+function markK(){kb.forEach(([e,b])=>{b.style.outline=e===dk?'2px solid var(--ac)':'none'})}
+function openDl(date,x){dEdit=x||null;$('#dlh').textContent=x?'Edit deadline':'New deadline';$('#dlt').value=x?x.t:'';$('#dld').value=x?x.d:(date||key(Date.now()));dk=x?x.k:'📚';markK();$('#dle').textContent='';dlg.showModal()}
+$('#dlc').onclick=()=>dlg.close();
+$('#dls').onclick=()=>{
+  const t=$('#dlt').value.trim(),d=$('#dld').value;
+  if(!t||!d){$('#dle').textContent='Enter a title and pick a date.';return}
+  if(dEdit){dEdit.t=t;dEdit.d=d;dEdit.k=dk}else dls.push({id:Date.now(),t,d,k:dk,done:false});
+  saveDl();dlg.close();renderDl();calRef();
+};
+$('#ndd').onclick=()=>{$('#nd').close();openDl(nk)};
+const dcard=document.createElement('div');dcard.className='card';
+dcard.innerHTML='<div class="row" style="align-items:center"><b style="flex:1">🎯 Deadlines &amp; goals</b><button class="btn g" id="dla" style="flex:0 0 auto;padding:8px 12px;font-size:14px">＋ Add</button></div><div id="dlbox"></div>';
+$('#rec').children[1].after(dcard);
+$('#dla').onclick=()=>openDl();
+let dlAll=false;
+function calRef(){if(!$('#cal').classList.contains('hide'))renderCal()}
+function renderDl(){
+  const box=$('#dlbox');box.innerHTML='';
+  if(!dls.length){box.innerHTML='<div class="mu" style="margin-top:8px">Add a goal like “finish this book by Nov 20” — it shows up in the Calendar with a countdown.</div>';return}
+  const a=[...dls].sort((p,q)=>((+!!p.done)-(+!!q.done))||(p.d<q.d?-1:p.d>q.d?1:0));
+  (dlAll?a:a.slice(0,5)).forEach(x=>{
+    const r=document.createElement('div');r.style.cssText='display:flex;align-items:center;gap:8px;margin-top:8px;'+(x.done?'opacity:.55':'');
+    const c=document.createElement('button');c.className='btn g';c.style.cssText='flex:0 0 38px;padding:6px;font-size:17px';c.textContent=x.done?'☑':'☐';c.onclick=()=>{x.done=!x.done;saveDl();renderDl();calRef()};
+    const m=document.createElement('div');m.style.cssText='flex:1;min-width:0;cursor:pointer';m.innerHTML='<div style="font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;'+(x.done?'text-decoration:line-through':'')+'">'+x.k+' '+esc(x.t)+'</div><div class="mu">'+x.d+'</div>';m.onclick=()=>openDl(null,x);
+    const n=ddays(x),b=document.createElement('div');b.textContent=dd(x);b.style.cssText='font-weight:700;font-size:13px;white-space:nowrap;color:'+(x.done?'var(--mu)':n<0?'#d33':n<=3?'var(--ac)':'var(--mu)');
+    const d=document.createElement('button');d.className='btn g';d.style.cssText='flex:0 0 38px;padding:6px;font-size:15px';d.textContent='🗑';d.onclick=()=>confirmDel('Delete this deadline?',()=>{dls=dls.filter(z=>z!==x);saveDl();renderDl();calRef()});
+    r.append(c,m,b,d);box.append(r)});
+  if(a.length>5){const t=document.createElement('button');t.className='btn g';t.style.cssText='width:100%;margin-top:8px;font-size:14px;padding:8px';t.textContent=dlAll?'Show less':'Show all ('+a.length+')';t.onclick=()=>{dlAll=!dlAll;renderDl()};box.append(t)}
+}
+renderDl();
 openDB().then(()=>renderBoard());
 </script>
 </body>
